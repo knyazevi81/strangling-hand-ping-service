@@ -1,0 +1,16 @@
+services:
+  ping-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ping-service
+    restart: unless-stopped
+    ports:
+      - "8088:8088"
+    networks:
+      - shared-vpn-network
+
+networks:
+  shared-vpn-network:
+    external: true
+    name: shared-vpn-network
