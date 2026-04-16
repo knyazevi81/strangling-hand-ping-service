@@ -2,25 +2,13 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-# Системные зависимости
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    unzip \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем xray из официального релиза
-ARG XRAY_VERSION=1.8.24
-ARG TARGETARCH=amd64
-RUN curl -fsSL \
-    "https://github.com/XTLS/Xray-core/releases/download/v${XRAY_VERSION}/Xray-linux-${TARGETARCH}.zip" \
-    -o /tmp/xray.zip \
-    && unzip /tmp/xray.zip xray -d /usr/local/bin/ \
-    && chmod +x /usr/local/bin/xray \
-    && rm /tmp/xray.zip \
-    && xray version
+COPY xray /usr/local/bin/xray
+RUN chmod +x /usr/local/bin/xray && xray version
 
-# Python зависимости
 COPY pyproject.toml .
 RUN pip install --no-cache-dir \
     "fastapi>=0.135.0" \
